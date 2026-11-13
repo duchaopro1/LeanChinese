@@ -1,0 +1,551 @@
+<meta charset="utf-8">
+<title>Giải Tự</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&family=Noto+Serif+SC:wght@500;700&display=swap">
+<style>
+/* Layout: thanh tìm kiếm trên cùng, thẻ tổng quan, hai cột (cấu tạo | gợi ý âm), câu chuyện, họ hàng của chữ. */
+:root {
+  --bg: #f1ece2;
+  --card: #fbf9f4;
+  --sunk: #f3eee4;
+  --line: #e4dccd;
+  --ink: #221f1a;
+  --muted: #7b7367;
+  --accent: #b3532e;
+  --accent-bg: #f6e3d9;
+  --ph: #3a4da3;
+  --ph-bg: #e2e7f6;
+  --se: #2c7a55;
+  --se-bg: #dcefe4;
+  --k0: #a8701a; --k0-bg: #f5e8cf;
+  --k1: #7a4ca6; --k1-bg: #ebe0f4;
+  --k2: #1f7a85; --k2-bg: #d9eef0;
+  --ghost: #e3dccd;
+  --ink-stroke: #2b2823;
+  --font-ui: "Be Vietnam Pro", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --font-han: "Noto Serif SC", "Songti SC", "SimSun", "Noto Serif CJK SC", serif;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #17150f; --card: #211e18; --sunk: #1b1913; --line: #38342b; --ink: #efe9dc; --muted: #a69e8e;
+    --accent: #e8926a; --accent-bg: #3a261c; --ph: #93a7f2; --ph-bg: #262c4d; --se: #72c99a; --se-bg: #1f3a2d;
+    --k0: #e0a850; --k0-bg: #3d3018; --k1: #bf96e6; --k1-bg: #34264a; --k2: #5ec4cf; --k2-bg: #173c40;
+    --ghost: #35312a; --ink-stroke: #efe9dc; color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #17150f; --card: #211e18; --sunk: #1b1913; --line: #38342b; --ink: #efe9dc; --muted: #a69e8e;
+  --accent: #e8926a; --accent-bg: #3a261c; --ph: #93a7f2; --ph-bg: #262c4d; --se: #72c99a; --se-bg: #1f3a2d;
+  --k0: #e0a850; --k0-bg: #3d3018; --k1: #bf96e6; --k1-bg: #34264a; --k2: #5ec4cf; --k2-bg: #173c40;
+  --ghost: #35312a; --ink-stroke: #efe9dc; color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body {
+  background: var(--bg); color: var(--ink); font: 15px/1.55 var(--font-ui);
+  padding-block: 20px 56px;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+}
+.wrap { max-width: 960px; margin: 0 auto; display: grid; gap: 16px; }
+.han { font-family: var(--font-han); }
+button { font: inherit; color: inherit; cursor: pointer; }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+/* top bar */
+.bar { display: flex; flex-wrap: wrap; align-items: center; gap: 12px 20px; }
+.brand { font-weight: 700; font-size: 20px; letter-spacing: -.01em; display: flex; align-items: baseline; gap: 8px; }
+.brand small { font-weight: 500; font-size: 12px; color: var(--muted); }
+.search { flex: 1 1 280px; display: flex; gap: 8px; min-width: 0; }
+.search input {
+  flex: 1; min-width: 0; font: 500 18px var(--font-han); padding: 10px 14px; border-radius: 12px;
+  border: 1px solid var(--line); background: var(--card); color: var(--ink);
+}
+.search button.go { padding: 0 18px; border-radius: 12px; border: 0; background: var(--ink); color: var(--bg); font-weight: 600; }
+.chips { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+.chip {
+  border: 1px solid var(--line); background: var(--card); border-radius: 10px; padding: 4px 12px;
+  font: 500 20px var(--font-han); line-height: 1.4;
+}
+.chip[aria-current="true"] { background: var(--ink); color: var(--bg); border-color: var(--ink); }
+.chips .lbl { font-size: 12px; color: var(--muted); margin-right: 2px; }
+
+.card { background: var(--card); border: 1px solid var(--line); border-radius: 20px; padding: 24px; min-width: 0; }
+.card h2 { margin: 0 0 16px; font-size: 14px; font-weight: 600; display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap; }
+.card h2 span { font-weight: 400; color: var(--muted); font-size: 12px; }
+
+/* hero */
+.hero { display: grid; grid-template-columns: 188px 1fr; gap: 28px; align-items: center; }
+.glyph { position: relative; width: 188px; aspect-ratio: 1; border-radius: 16px; background: var(--sunk); border: 1px solid var(--line); cursor: pointer; }
+.glyph svg { width: 100%; height: 100%; display: block; }
+.glyph .grid { stroke: var(--line); stroke-width: 6; stroke-dasharray: 22 18; fill: none; }
+.glyph .ghost { fill: var(--ghost); }
+.glyph .rv { fill: none; stroke-width: 150; stroke-linecap: round; stroke-linejoin: round; stroke: var(--ink-stroke); }
+.rv.ph { stroke: var(--ph); } .rv.se { stroke: var(--se); }
+.rv.k0 { stroke: var(--k0); } .rv.k1 { stroke: var(--k1); } .rv.k2 { stroke: var(--k2); }
+.replay {
+  position: absolute; right: 8px; bottom: 8px; width: 30px; height: 30px; border-radius: 50%;
+  border: 1px solid var(--line); background: var(--card); display: grid; place-items: center; padding: 0;
+}
+.nostroke { position: absolute; inset: 0; display: grid; place-items: center; font: 500 120px var(--font-han); }
+.py { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+.py .pinyin { font-size: 40px; font-weight: 700; color: var(--accent); letter-spacing: -.01em; line-height: 1.15; }
+.spk { width: 34px; height: 34px; border-radius: 50%; border: 0; background: var(--accent-bg); color: var(--accent); display: grid; place-items: center; padding: 0; }
+.mean { font-size: 22px; font-weight: 600; margin: 4px 0 2px; text-wrap: balance; }
+.mean-en { font-size: 13px; color: var(--muted); }
+.hv { margin: 8px 0 14px; font-size: 14px; color: var(--muted); }
+.hv b { color: var(--ink); font-weight: 700; font-size: 16px; }
+.tags { display: flex; flex-wrap: wrap; gap: 8px; }
+.tag { font-size: 12px; padding: 3px 10px; border-radius: 999px; background: var(--sunk); border: 1px solid var(--line); color: var(--muted); }
+.tag.hot { background: var(--accent-bg); border-color: transparent; color: var(--accent); }
+.legend { margin-top: 16px; padding-top: 14px; border-top: 1px solid var(--line); display: flex; gap: 20px; flex-wrap: wrap; font-size: 12px; color: var(--muted); align-items: center; }
+.legend i { display: inline-block; width: 8px; height: 8px; border-radius: 2px; margin-right: 6px; }
+.legend .han { font-size: 17px; margin-left: 4px; }
+
+.cols { display: grid; grid-template-columns: 1.35fr 1fr; gap: 16px; align-items: start; }
+.cols > * { min-width: 0; }
+
+/* components */
+.parts { display: grid; gap: 14px; }
+.parts.two { grid-template-columns: 1fr auto 1fr; align-items: start; }
+.plus { align-self: center; color: var(--muted); font-size: 20px; }
+.part { display: grid; gap: 10px; min-width: 0; }
+.pc {
+  border: 1px solid var(--line); border-top: 3px solid var(--c, var(--muted)); border-radius: 14px;
+  padding: 14px 10px 12px; text-align: center; background: var(--card);
+}
+.pc .role { display: inline-block; font-size: 11px; font-weight: 600; padding: 2px 10px; border-radius: 999px; background: var(--cbg, var(--sunk)); color: var(--c, var(--muted)); }
+.pc .big { font: 500 52px/1.2 var(--font-han); color: var(--c, var(--ink)); margin: 6px 0 2px; }
+.pc .rd { font-size: 13px; font-weight: 600; }
+.pc .gl { font-size: 12px; color: var(--muted); }
+.subs { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; }
+.sub { flex: 1 1 70px; max-width: 120px; border: 1px dashed var(--line); border-radius: 10px; padding: 8px 6px; text-align: center; }
+.sub .han { font-size: 28px; line-height: 1.2; }
+.sub .rd { font-size: 11px; font-weight: 600; }
+.sub .gl { font-size: 11px; color: var(--muted); }
+.eq { text-align: center; font-size: 13px; color: var(--muted); }
+.eq .han { color: var(--ink); font-size: 15px; }
+.lay { display: grid; justify-items: center; gap: 8px; margin-top: 18px; }
+.lay .box { position: relative; width: 120px; height: 120px; border-radius: 10px; overflow: hidden; background: var(--sunk); border: 1px solid var(--line); }
+.lay .r { position: absolute; display: grid; place-items: center; font-family: var(--font-han); font-weight: 500; color: var(--c); background: var(--cbg); }
+.lay .r.solid { border: 1px solid var(--c); }
+.lay .cap { font-size: 12px; color: var(--muted); }
+.note { color: var(--muted); font-size: 13px; }
+
+/* sound hint */
+.snd .arrow { display: flex; align-items: center; justify-content: center; gap: 18px; font: 500 58px/1.1 var(--font-han); margin-bottom: 14px; }
+.snd .arrow i { font: 400 28px var(--font-ui); color: var(--muted); font-style: normal; }
+.snd .ph { color: var(--ph); }
+.cmp { background: var(--sunk); border: 1px solid var(--line); border-radius: 12px; padding: 10px 14px; margin-bottom: 10px; }
+.cmp .hd { display: flex; justify-content: space-between; gap: 8px; font-size: 12px; color: var(--muted); margin-bottom: 4px; flex-wrap: wrap; }
+.cmp .hd em { font-style: normal; background: var(--accent-bg); color: var(--accent); border-radius: 999px; padding: 1px 10px; font-size: 11px; font-weight: 600; }
+.cmp .row { font-size: 20px; font-weight: 600; display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+.cmp .row span.s { color: var(--muted); font-weight: 400; }
+.cmp u { text-decoration-color: var(--accent); text-decoration-thickness: 2px; text-underline-offset: 3px; }
+.rad { display: flex; gap: 16px; align-items: center; }
+.rad .han { font-size: 56px; line-height: 1.1; }
+
+/* story */
+.story { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+.story > section { border-radius: 14px; padding: 16px 18px; min-width: 0; background: var(--sunk); border: 1px solid var(--line); }
+.story > section.mn { background: var(--accent-bg); border: 1px dashed var(--accent); }
+.story h3 { margin: 0 0 10px; font-size: 13px; font-weight: 600; display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+.story h3 span { font-weight: 400; font-size: 11px; color: var(--muted); background: var(--card); border-radius: 999px; padding: 1px 9px; }
+.story p { margin: 0 0 8px; }
+.story .en { font-size: 13px; color: var(--muted); font-style: italic; }
+.story textarea {
+  width: 100%; min-height: 96px; resize: vertical; font: inherit; line-height: 1.5; padding: 10px 12px;
+  border-radius: 10px; border: 1px solid var(--line); background: var(--card); color: var(--ink);
+}
+.link { background: none; border: 0; padding: 4px 0; color: var(--accent); font-size: 13px; font-weight: 600; }
+.c-ph { color: var(--ph); font-weight: 600; } .c-se { color: var(--se); font-weight: 600; }
+
+/* lists */
+.list { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 10px; }
+.it { border: 1px solid var(--line); border-radius: 12px; padding: 10px 12px; background: var(--card); text-align: left; min-width: 0; display: grid; gap: 2px; }
+button.it:hover { border-color: var(--accent); }
+.it .han { font-size: 26px; line-height: 1.25; }
+.it .rd { font-size: 12px; font-weight: 600; }
+.it .gl { font-size: 12px; color: var(--muted); overflow-wrap: anywhere; }
+.words { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 10px; }
+.w { display: flex; gap: 12px; align-items: baseline; border-bottom: 1px solid var(--line); padding: 8px 2px; min-width: 0; }
+.w .han { font-size: 22px; flex: none; }
+.w .han b { color: var(--accent); font-weight: 700; }
+.w .rd { font-size: 12px; font-weight: 600; flex: none; }
+.w .gl { font-size: 12px; color: var(--muted); overflow-wrap: anywhere; }
+.empty { text-align: center; padding: 40px 16px; color: var(--muted); }
+.foot { font-size: 12px; color: var(--muted); text-align: center; }
+
+@media (max-width: 760px) {
+  .cols, .story { grid-template-columns: 1fr; }
+  .hero { grid-template-columns: 1fr; justify-items: center; text-align: center; }
+  .py, .tags, .legend { justify-content: center; }
+  .py .pinyin { font-size: 34px; }
+  .card { padding: 18px; }
+}
+@media (max-width: 480px) {
+  .parts.two { grid-template-columns: 1fr; }
+  .plus { justify-self: center; }
+}
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+</style>
+
+<div class="wrap">
+  <header class="bar">
+    <div class="brand">Giải tự <small>phân tích cấu tạo chữ Hán</small></div>
+    <form class="search" id="form" autocomplete="off">
+      <input id="q" type="text" inputmode="text" lang="zh-Hans" placeholder="Nhập một chữ hoặc một từ, ví dụ 想" aria-label="Chữ Hán cần phân tích">
+      <button class="go" type="submit">Phân tích</button>
+    </form>
+  </header>
+  <div class="chips" id="chars" aria-label="Các chữ đã nhập"></div>
+  <main id="out" class="wrap" style="gap:16px"><div class="empty">Đang tải dữ liệu…</div></main>
+  <p class="foot">Dữ liệu: Make Me a Hanzi (phân rã, nét bút), Unihan và hanviet-pinyin-words (Hán Việt), complete-hsk-vocabulary (HSK, từ vựng). Nghĩa tiếng Việt hiện có cho chữ HSK 1–3, các chữ còn lại hiển thị nghĩa tiếng Anh.</p>
+</div>
+
+<script>
+(() => {
+'use strict';
+const $ = s => document.querySelector(s);
+const esc = s => String(s ?? '').replace(/[&<>"]/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[m]));
+const store = { get(k){ try { return localStorage.getItem(k); } catch { return null; } }, set(k,v){ try { localStorage.setItem(k,v); } catch {} } };
+
+let D = null, W = null; const shards = {};
+const HAN = /\p{Script=Han}/u;
+const SAMPLES = ['想', '朋', '好', '样', '河', '念'];
+
+/* bộ thủ biến thể và thành phần không có Hán Việt trong dữ liệu: [pinyin, Hán Việt, nghĩa] */
+const RAD = {
+  '氵':['shuǐ','thuỷ','nước'], '氺':['shuǐ','thuỷ','nước'], '忄':['xīn','tâm','tim, lòng'], '⺗':['xīn','tâm','tim, lòng'], '扌':['shǒu','thủ','tay'],
+  '亻':['rén','nhân','người'], '讠':['yán','ngôn','lời nói'], '钅':['jīn','kim','kim loại'], '饣':['shí','thực','ăn'], '纟':['sī','mịch','tơ'],
+  '艹':['cǎo','thảo','cỏ'], '⺾':['cǎo','thảo','cỏ'], '灬':['huǒ','hoả','lửa'], '辶':['chuò','sước','đi'], '犭':['quǎn','khuyển','chó'],
+  '礻':['shì','thị','thần, tế'], '衤':['yī','y','áo'], '刂':['dāo','đao','dao'], '冫':['bīng','băng','băng'], '宀':['mián','miên','mái nhà'],
+  '彳':['chì','xích','bước chân'], '疒':['nè','nạch','bệnh'], '罒':['wǎng','võng','lưới'], '攵':['pū','phộc','đánh nhẹ'], '⺮':['zhú','trúc','tre'],
+  '牜':['niú','ngưu','trâu bò'], '爫':['zhǎo','trảo','móng vuốt'], '⺼':['ròu','nhục','thịt'], '阝':['fù','phụ','gò đất / ấp'], '丷':['bā','bát','hai nét chấm'],
+  '⺌':['xiǎo','tiểu','nhỏ'], '⺈':['dāo','đao','dao'], '𧾷':['zú','túc','chân'], '𠂉':['','','nét phẩy'], '⺊':['bǔ','bốc','bói'], '⺍':['','','nét chấm trên']
+};
+
+const LAYOUT = {
+  '⿰':['Trái – phải', [[0,0,50,100],[50,0,50,100]]],
+  '⿱':['Trên – dưới', [[0,0,100,50],[0,50,100,50]]],
+  '⿲':['Trái – giữa – phải', [[0,0,34,100],[33,0,34,100],[66,0,34,100]]],
+  '⿳':['Trên – giữa – dưới', [[0,0,100,34],[0,33,100,34],[0,66,100,34]]],
+  '⿴':['Bao kín', [[0,0,100,100],[26,26,48,48]]],
+  '⿵':['Bao từ trên', [[0,0,100,100],[22,34,56,66]]],
+  '⿶':['Bao từ dưới', [[0,0,100,100],[22,0,56,66]]],
+  '⿷':['Bao từ trái', [[0,0,100,100],[34,22,66,56]]],
+  '⿸':['Bao từ góc trên trái', [[0,0,100,100],[36,36,64,64]]],
+  '⿹':['Bao từ góc trên phải', [[0,0,100,100],[0,36,64,64]]],
+  '⿺':['Bao từ góc dưới trái', [[0,0,100,100],[36,0,64,64]]],
+  '⿻':['Chồng lên nhau', [[0,0,100,100],[20,20,60,60]]]
+};
+const ARITY = { '⿲':3, '⿳':3 };
+const TYPE = { pictophonetic:'chữ hình thanh', ideographic:'chữ hội ý', pictographic:'chữ tượng hình' };
+
+/* ---------- helpers ---------- */
+const TONE_PY = new Set(['̄','́','̌','̀']);
+const TONE_VI = { '̀':'huyền', '́':'sắc', '̃':'ngã', '̉':'hỏi', '̣':'nặng' };
+function clusters(str) {
+  const out = []; for (const ch of str.normalize('NFD')) {
+    if (/\p{M}/u.test(ch) && out.length) out[out.length-1] += ch; else out.push(ch);
+  } return out;
+}
+function underline(str, toneSet) {
+  return clusters(str).map(c => {
+    const has = [...c].some(x => toneSet.has?.(x) ?? (x in toneSet));
+    const n = c.normalize('NFC'); return has ? `<u>${esc(n)}</u>` : esc(n);
+  }).join('');
+}
+function pySplit(py) {
+  let tone = 5, base = '';
+  for (const ch of py.toLowerCase().normalize('NFD')) {
+    if (ch === '̄') tone = 1; else if (ch === '́') tone = 2; else if (ch === '̌') tone = 3; else if (ch === '̀') tone = 4;
+    else base += ch;
+  }
+  base = base.normalize('NFC');
+  const m = base.match(/^(zh|ch|sh|[bpmfdtnlgkhjqxrzcsyw])?(.*)$/);
+  return { tone, base, ini: m[1] || '', fin: m[2] };
+}
+function viSplit(s) {
+  let tone = 'ngang', base = '';
+  for (const ch of s.toLowerCase().normalize('NFD')) { if (ch in TONE_VI) tone = TONE_VI[ch]; else base += ch; }
+  return { tone, base: base.normalize('NFC') };
+}
+const uniq = a => [...new Set(a)];
+function hvList(c) { return uniq((c?.hv || []).flat()); }
+function shortEn(c) {
+  if (!c) return '';
+  const t = (c.m && c.m[0]) || (c.d || '').split(';')[0].split(',')[0];
+  return t.length > 34 ? t.slice(0, 32) + '…' : t;
+}
+function info(ch) {
+  const c = D[ch], r = RAD[ch];
+  return {
+    py: (r && r[0]) || c?.p?.[0] || '',
+    hv: r ? (r[1] ? [r[1]] : []) : hvList(c).slice(0, 2),
+    gl: (r && r[2]) || c?.v || shortEn(c),
+    c
+  };
+}
+function freqLabel(f) { return f <= 500 ? 'Rất thông dụng' : f <= 2000 ? 'Thông dụng' : f <= 5000 ? 'Khá thông dụng' : ''; }
+
+function parseIDS(s) {
+  if (!s) return null;
+  const a = Array.from(s); let i = 0;
+  const node = () => {
+    const ch = a[i++];
+    if (LAYOUT[ch]) { const n = ARITY[ch] || 2; const kids = []; for (let k = 0; k < n; k++) kids.push(node()); return { op: ch, kids }; }
+    return { ch };
+  };
+  try { return node(); } catch { return null; }
+}
+const flat = n => n.ch ? n.ch : n.kids.map(flat).join('');
+
+/* ---------- data ---------- */
+async function load() {
+  D = await (await fetch('data/chars.json')).json();
+}
+async function words() { if (!W) { try { W = await (await fetch('data/words.json')).json(); } catch { W = {}; } } return W; }
+async function strokes(ch) {
+  const k = (ch.codePointAt(0) >> 8).toString(16);
+  if (!shards[k]) shards[k] = fetch(`data/strokes/${k}.json`).then(r => r.ok ? r.json() : {}).catch(() => ({}));
+  return (await shards[k])[ch];
+}
+
+/* ---------- roles ---------- */
+function roles(ch, tree) {
+  const et = D[ch]?.et; const pict = et?.type === 'pictophonetic';
+  if (!tree?.kids) return [];
+  let k = 0;
+  return tree.kids.map(n => {
+    const s = flat(n);
+    if (pict && s === et.phonetic) return { cls: 'ph', label: 'Phần âm' };
+    if (pict && s === et.semantic) return { cls: 'se', label: 'Phần ý' };
+    return { cls: 'k' + (k++ % 3), label: 'Thành phần' };
+  });
+}
+const colorVars = cls => cls === 'ph' ? 'ph' : cls === 'se' ? 'se' : cls;
+
+/* ---------- stroke drawing ---------- */
+function drawGlyph(S, rs) {
+  if (!S) return '<div class="nostroke han" aria-hidden="true"></div>';
+  let defs = '', ghost = '', rv = '';
+  S.s.forEach((d, i) => {
+    const path = S.x?.[i]?.[0]; const cls = (path != null && rs[path]) ? rs[path].cls : '';
+    defs += `<clipPath id="cp${i}"><path d="${d}"/></clipPath>`;
+    ghost += `<path class="ghost" d="${d}"/>`;
+    rv += `<path class="rv ${cls}" clip-path="url(#cp${i})" d="M${S.m[i].map(p => p.join(',')).join(' L')}"/>`;
+  });
+  return `<svg viewBox="0 0 1024 1024" role="img" aria-label="Thứ tự nét bút">
+    <path class="grid" d="M0 0L1024 1024M1024 0L0 1024M512 0V1024M0 512H1024"/>
+    <defs>${defs}</defs><g transform="scale(1,-1) translate(0,-900)">${ghost}${rv}</g></svg>`;
+}
+function replay() {
+  const svg = document.querySelector('.glyph svg'); if (!svg || !svg.animate) return;
+  if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  let t = 0;
+  svg.querySelectorAll('.rv').forEach(p => {
+    const len = p.getTotalLength(); p.style.strokeDasharray = `${len} ${len}`;
+    const dur = Math.max(260, Math.min(700, len * 0.9));
+    p.animate([{ strokeDashoffset: len }, { strokeDashoffset: 0 }], { duration: dur, delay: t, fill: 'backwards', easing: 'ease-in-out' });
+    t += dur + 90;
+  });
+}
+
+/* ---------- layout diagram ---------- */
+function layoutDiagram(tree, rs) {
+  if (!tree?.kids) return '';
+  const [name, rects] = LAYOUT[tree.op];
+  const encl = rects[0][2] === 100 && rects[0][3] === 100 && rects.length === 2;
+  const html = rects.map((r, i) => {
+    const [x, y, w, h] = r; const role = rs[i] || { cls: 'k0' };
+    const fs = Math.round(Math.min(w, h) / 100 * 120 * 0.62);
+    const solid = encl && i === 1 ? ' solid' : '';
+    return `<div class="r han${solid}" style="left:${x}%;top:${y}%;width:${w}%;height:${h}%;font-size:${fs}px;--c:var(--${colorVars(role.cls)});--cbg:var(--${colorVars(role.cls)}-bg)">${esc(flat(tree.kids[i]))}</div>`;
+  }).join('');
+  return `<div class="lay"><div class="box" aria-hidden="true">${html}</div><div class="cap">Bố cục ${name.toLowerCase()}</div></div>`;
+}
+
+/* ---------- sections ---------- */
+function partCard(n, role) {
+  const s = flat(n), ii = info(s);
+  const style = `--c:var(--${colorVars(role.cls)});--cbg:var(--${colorVars(role.cls)}-bg)`;
+  let subs = '', eq = '';
+  const sd = parseIDS(D[s]?.dc);
+  if (sd?.kids && sd.kids.length <= 3 && sd.kids.every(k => k.ch && k.ch !== '？')) {
+    const names = sd.kids.map(k => k.ch);
+    subs = `<div class="subs">${names.map(k => { const q = info(k); return `<div class="sub"><div class="han">${esc(k)}</div><div class="rd">${esc(q.py)}${q.hv[0] ? ' · ' + esc(q.hv[0]) : ''}</div><div class="gl">${esc(q.gl)}</div></div>`; }).join('')}</div>`;
+    eq = `<div class="eq"><span class="han">${esc(s)}</span> = ${names.map(k => `<span class="han">${esc(k)}</span>`).join(' + ')}</div>`;
+  }
+  return `<div class="part"><div class="pc" style="${style}"><span class="role">${role.label}</span>
+    <div class="big han">${esc(s)}</div><div class="rd">${esc(ii.py)}${ii.hv[0] ? ' · ' + esc(ii.hv.join(', ')) : ''}</div><div class="gl">${esc(ii.gl)}</div></div>${subs}${eq}</div>`;
+}
+
+function soundCard(ch, tree, rs) {
+  const et = D[ch]?.et; if (et?.type !== 'pictophonetic' || !et.phonetic) return null;
+  const ph = et.phonetic, pc = D[ph]; if (!pc?.p) return null;
+  const mine = D[ch].p || []; if (!mine.length) return null;
+  const a = pySplit(mine[0]);
+  const cand = pc.p.map(p => ({ p, s: pySplit(p) }));
+  const best = cand.find(x => x.s.base === a.base) || cand.find(x => x.s.fin === a.fin) || cand[0];
+  const b = best.s;
+  const pyRel = b.base === a.base ? (b.tone === a.tone ? 'giống hệt' : `thanh ${b.tone} → thanh ${a.tone}`)
+              : b.fin === a.fin ? 'cùng vần, khác phụ âm đầu' : b.ini === a.ini ? 'cùng phụ âm đầu, khác vần' : 'đã khác khá nhiều';
+  const h1 = hvList(pc)[0], h2 = hvList(D[ch])[0];
+  let hvBlock = '', hvSame = false;
+  if (h1 && h2) {
+    const x = viSplit(h1), y = viSplit(h2); hvSame = x.base === y.base;
+    const rel = hvSame ? (x.tone === y.tone ? 'giống hệt' : `${x.tone} → ${y.tone}`) : 'đã khác';
+    hvBlock = `<div class="cmp"><div class="hd"><span>Hán Việt</span><em>${esc(rel)}</em></div>
+      <div class="row"><span>${underline(h1, new Set(Object.keys(TONE_VI)))}</span> <span class="s">→</span> <span>${underline(h2, new Set(Object.keys(TONE_VI)))}</span></div></div>`;
+  }
+  const pySame = b.base === a.base;
+  let tip;
+  if (pySame && hvSame) tip = `Biết <b class="han c-ph">${esc(ph)}</b> là đoán được cả hai cách đọc của <b class="han">${esc(ch)}</b>: giữ nguyên vần, chỉ đổi thanh.`;
+  else if (pySame) tip = `Pinyin của <b class="han c-ph">${esc(ph)}</b> và <b class="han">${esc(ch)}</b> chỉ khác thanh, còn âm Hán Việt đã lệch đi.`;
+  else if (b.fin === a.fin || b.ini === a.ini) tip = `<b class="han c-ph">${esc(ph)}</b> chỉ gợi ý gần đúng: ${b.fin === a.fin ? 'cùng vần' : 'cùng phụ âm đầu'} với <b class="han">${esc(ch)}</b>, nhưng cách đọc đã đổi theo thời gian.`;
+  else tip = `Âm của <b class="han c-ph">${esc(ph)}</b> đã đổi nhiều so với <b class="han">${esc(ch)}</b>, chỉ nên coi là manh mối phụ.`;
+  const hv3 = h2 && viSplit(h2).tone;
+  if (a.tone === 3 && (hv3 === 'hỏi' || hv3 === 'ngã')) tip += ' Thanh 3 và dấu hỏi, ngã đều có đường cong đi xuống rồi lên.';
+  return `<div class="card snd"><h2>Gợi ý âm đọc</h2>
+    <div class="arrow"><span class="ph">${esc(ph)}</span><i>→</i><span>${esc(ch)}</span></div>
+    <div class="cmp"><div class="hd"><span>Pinyin</span><em>${esc(pyRel)}</em></div>
+      <div class="row"><span>${underline(best.p, TONE_PY)}</span> <span class="s">→</span> <span>${underline(mine[0], TONE_PY)}</span></div></div>
+    ${hvBlock}<p class="note" style="margin:6px 0 0">${tip}</p></div>`;
+}
+
+function radicalCard(ch) {
+  const r = D[ch]?.r; if (!r) return '';
+  const ii = info(r);
+  return `<div class="card"><h2>Bộ thủ</h2><div class="rad"><div class="han">${esc(r)}</div>
+    <div><div style="font-weight:600">${esc(ii.py)}${ii.hv[0] ? ' · ' + esc(ii.hv[0]) : ''}</div><div class="note">${esc(ii.gl)}</div>
+    <div class="note" style="margin-top:6px">Bộ thủ thường gợi ý lĩnh vực nghĩa của chữ.</div></div></div></div>`;
+}
+
+function origin(ch, tree, rs) {
+  const c = D[ch], et = c?.et; const kids = tree?.kids ? tree.kids.map(flat) : [];
+  const nm = s => { const q = info(s); return `${s} (${q.hv[0] || q.py || '?'})`; };
+  let vi = '', en = et?.hint ? esc(et.hint.replace(/ /g, ' ')) : '';
+  if (et?.type === 'pictophonetic') {
+    vi = `<span class="han">${esc(ch)}</span> là chữ hình thanh: <span class="c-se"><span class="han">${esc(nm(et.semantic))}</span></span> chỉ nghĩa, <span class="c-ph"><span class="han">${esc(nm(et.phonetic))}</span></span> chỉ âm.`;
+    const sub = D[et.phonetic]?.et;
+    if (sub?.hint) vi += ` Bản thân <span class="han">${esc(et.phonetic)}</span> là ${TYPE[sub.type] || 'chữ ghép'}: ${esc(sub.hint.replace(/ /g, ' '))}.`;
+  } else if (et?.type === 'ideographic' && kids.length) {
+    vi = `<span class="han">${esc(ch)}</span> là chữ hội ý: ghép ${kids.map(k => `<span class="han">${esc(nm(k))}</span>`).join(' + ')} để tạo ra nghĩa mới.`;
+  } else if (et?.type === 'pictographic') {
+    vi = `<span class="han">${esc(ch)}</span> là chữ tượng hình: vẽ lại hình dạng của sự vật.`;
+  } else if (kids.length) {
+    vi = `<span class="han">${esc(ch)}</span> ghép từ ${kids.map(k => `<span class="han">${esc(nm(k))}</span>`).join(' + ')}. Dữ liệu chưa xếp loại chữ này.`;
+  } else vi = `<span class="han">${esc(ch)}</span> không phân rã thêm trong dữ liệu, thường là chữ cơ bản hoặc nét đơn giản.`;
+  return `<section><h3>Nguồn gốc <span>theo dữ liệu Make Me a Hanzi</span></h3><p>${vi}</p>${en ? `<p class="en">“${en}”</p>` : ''}</section>`;
+}
+function draft(ch, tree, rs) {
+  const et = D[ch]?.et, nm = s => { const q = info(s); return `${s} (${q.gl || q.hv[0] || ''})`; };
+  if (et?.type === 'pictophonetic') {
+    const a = info(et.phonetic), b = info(ch);
+    return `Phần ý ${nm(et.semantic)} cho biết chữ liên quan đến ý nghĩa này. Phần âm ${et.phonetic} đọc “${a.hv[0] || a.py}”, chữ ${ch} đọc gần giống “${b.hv[0] || b.py}”.`;
+  }
+  if (tree?.kids) return `Nhớ chữ này bằng cách ghép: ${tree.kids.map(k => nm(flat(k))).join(' + ')} → ${ch}.`;
+  return `Chữ ${ch} là chữ cơ bản, hãy gắn nó với một hình ảnh bạn dễ nhớ.`;
+}
+
+function family(ch) {
+  const et = D[ch]?.et; if (et?.type !== 'pictophonetic') return '';
+  const ph = et.phonetic;
+  const list = Object.entries(D).filter(([k, v]) => k !== ch && v.et?.type === 'pictophonetic' && v.et.phonetic === ph && v.p)
+    .sort((x, y) => ((x[1].h ?? 99) - (y[1].h ?? 99)) || ((x[1].f ?? 1e9) - (y[1].f ?? 1e9))).slice(0, 15);
+  if (!list.length) return '';
+  return `<div class="card"><h2>Cùng phần âm <span class="han" style="font-size:18px;color:var(--ph)">${esc(ph)}</span><span>các chữ này có cách đọc gần nhau</span></h2>
+    <div class="list">${list.map(([k]) => { const q = info(k); return `<button class="it" data-go="${esc(k)}"><span class="han">${esc(k)}</span><span class="rd">${esc(q.py)}${q.hv[0] ? ' · ' + esc(q.hv[0]) : ''}</span><span class="gl">${esc(q.gl)}</span></button>`; }).join('')}</div></div>`;
+}
+async function wordsCard(ch) {
+  const w = (await words())[ch]; if (!w?.length) return '';
+  return `<div class="card"><h2>Từ thường gặp <span>trong từ vựng HSK</span></h2><div class="words">${w.map(([t, py, m, L]) =>
+    `<div class="w"><span class="han">${Array.from(t).map(x => x === ch ? `<b>${esc(x)}</b>` : esc(x)).join('')}</span><span class="rd">${esc(py)}</span><span class="gl">${esc(m)}</span></div>`).join('')}</div></div>`;
+}
+
+/* ---------- main render ---------- */
+let current = '';
+async function show(ch) {
+  current = ch; store.set('hanzi:last', ch);
+  document.querySelectorAll('#chars .chip').forEach(b => b.setAttribute('aria-current', b.dataset.go === ch ? 'true' : 'false'));
+  const out = $('#out'); const c = D[ch];
+  if (!c) { out.innerHTML = `<div class="card empty">Chưa có dữ liệu cho “${esc(ch)}”. Thử một chữ Hán khác.</div>`; return; }
+  const tree = parseIDS(c.dc); const rs = roles(ch, tree);
+  const S = await strokes(ch); if (current !== ch) return;
+  const ii = info(ch); const pinyins = c.p || [];
+  const hvAll = uniq([ ...(RAD[ch] ? [RAD[ch][1]] : []), ...hvList(c) ]).filter(Boolean);
+  const lv = c.h ? (c.hs === 'new' ? `HSK 3.0 · cấp ${c.h}` : `HSK ${c.h}`) : '';
+  const fl = c.f ? freqLabel(c.f) : '';
+  const meanVi = c.v || '';
+  const enList = (c.m && c.m.length ? c.m.slice(0, 3).join('; ') : (c.d || ''));
+  const et = c.et; const pict = et?.type === 'pictophonetic';
+  const legend = pict ? `<div class="legend"><span><i style="background:var(--ph)"></i>Phần âm <span class="han" style="color:var(--ph)">${esc(et.phonetic)}</span></span><span><i style="background:var(--se)"></i>Phần ý <span class="han" style="color:var(--se)">${esc(et.semantic)}</span></span></div>`
+    : tree?.kids ? `<div class="legend">${tree.kids.map((k, i) => `<span><i style="background:var(--${colorVars(rs[i].cls)})"></i>Thành phần <span class="han" style="color:var(--${colorVars(rs[i].cls)})">${esc(flat(k))}</span></span>`).join('')}</div>` : '';
+
+  const partsHtml = tree?.kids
+    ? `<div class="parts ${tree.kids.length === 2 ? 'two' : ''}">${tree.kids.map((k, i) => (i ? (tree.kids.length === 2 ? '<div class="plus">+</div>' : '') : '') + partCard(k, rs[i])).join('')}</div>${layoutDiagram(tree, rs)}`
+    : `<p class="note" style="margin:0">Chữ này không phân rã thêm thành các phần nhỏ hơn.</p>`;
+  const sound = soundCard(ch, tree, rs);
+  const saved = store.get('hanzi:note:' + ch) || '';
+
+  out.innerHTML = `
+  <section class="card hero">
+    <div class="glyph" id="glyph" title="Bấm để xem lại thứ tự nét">${drawGlyph(S, rs)}${S ? '' : ''}
+      <button class="replay" id="replay" aria-label="Xem lại thứ tự nét"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 3-6.7"/><path d="M3 4v5h5"/></svg></button></div>
+    <div>
+      <div class="py"><span class="pinyin">${pinyins.length ? pinyins.map(p => esc(p)).join(' / ') : '—'}</span>
+        <button class="spk" id="spk" aria-label="Nghe phát âm" hidden><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 5 6 9H2v6h4l5 4z"/><path d="M15.5 8.5a5 5 0 0 1 0 7"/><path d="M19 5a10 10 0 0 1 0 14"/></svg></button></div>
+      <div class="mean">${esc(meanVi || enList || '—')}</div>
+      ${meanVi && enList ? `<div class="mean-en">EN: ${esc(enList)}</div>` : ''}
+      <div class="hv">Hán Việt ${hvAll.length ? hvAll.map(h => `<b>${esc(h)}</b>`).join(', ') : '<b>—</b>'}</div>
+      <div class="tags">${lv ? `<span class="tag hot">${esc(lv)}</span>` : ''}${fl ? `<span class="tag">${fl}</span>` : ''}${S ? `<span class="tag">${S.s.length} nét</span>` : (c.n ? `<span class="tag">${c.n} nét</span>` : '')}${et ? `<span class="tag">${TYPE[et.type] || et.type}</span>` : ''}</div>
+      ${legend}
+    </div>
+  </section>
+  <div class="cols">
+    <section class="card"><h2>Cấu tạo chữ <span>${et ? TYPE[et.type] || '' : ''}</span></h2>${partsHtml}</section>
+    ${sound || radicalCard(ch)}
+  </div>
+  <section class="card"><h2>Câu chuyện <span>nguồn gốc theo dữ liệu, mẹo nhớ do bạn viết</span></h2>
+    <div class="story">${origin(ch, tree, rs)}
+      <section class="mn"><h3>Mẹo nhớ <span>ghi chú của bạn, lưu trên máy này</span></h3>
+        <textarea id="note" placeholder="Viết cách bạn nhớ chữ này…" aria-label="Mẹo nhớ">${esc(saved)}</textarea>
+        <button class="link" id="useDraft" type="button">↓ Điền bản nháp gợi ý</button></section></div></section>
+  ${family(ch)}
+  <div id="wordsSlot"></div>`;
+
+  $('#glyph').addEventListener('click', replay);
+  $('#replay').addEventListener('click', e => { e.stopPropagation(); replay(); });
+  const spk = $('#spk');
+  if ('speechSynthesis' in window) { spk.hidden = false; spk.addEventListener('click', () => { try { speechSynthesis.cancel(); const u = new SpeechSynthesisUtterance(ch); u.lang = 'zh-CN'; u.rate = .8; speechSynthesis.speak(u); } catch {} }); }
+  $('#note').addEventListener('input', e => store.set('hanzi:note:' + ch, e.target.value));
+  $('#useDraft').addEventListener('click', () => { const t = $('#note'); t.value = draft(ch, tree, rs); store.set('hanzi:note:' + ch, t.value); t.focus(); });
+  out.querySelectorAll('[data-go]').forEach(b => b.addEventListener('click', () => { setInput(b.dataset.go); window.scrollTo({ top: 0, behavior: 'smooth' }); }));
+  wordsCard(ch).then(h => { if (current === ch && h) $('#wordsSlot').innerHTML = h; });
+}
+
+/* ---------- input ---------- */
+function renderChips(list) {
+  $('#chars').innerHTML = list.length ? `<span class="lbl">${list.length > 1 ? 'Các chữ:' : 'Thử:'}</span>` + list.map(c => `<button class="chip han" data-go="${esc(c)}" aria-current="false">${esc(c)}</button>`).join('') : '';
+  $('#chars').querySelectorAll('.chip').forEach(b => b.addEventListener('click', () => show(b.dataset.go)));
+}
+function setInput(text) {
+  const list = uniq(Array.from(text).filter(c => HAN.test(c)));
+  $('#q').value = text;
+  if (!list.length) { $('#out').innerHTML = `<div class="card empty">Hãy nhập chữ Hán, ví dụ 想 hoặc 朋友.</div>`; return; }
+  renderChips(list.length > 1 ? list : []);
+  show(list[0]);
+}
+$('#form').addEventListener('submit', e => { e.preventDefault(); setInput($('#q').value.trim()); });
+
+load().then(() => {
+  const last = store.get('hanzi:last');
+  setInput(last && D[last] ? last : '想');
+  const s = document.createElement('div'); s.className = 'chips'; s.id = 'samples';
+  s.innerHTML = '<span class="lbl">Chữ mẫu:</span>' + SAMPLES.map(c => `<button class="chip han" data-s="${c}" aria-current="false">${c}</button>`).join('');
+  $('#chars').after(s);
+  s.querySelectorAll('.chip').forEach(b => b.addEventListener('click', () => setInput(b.dataset.s)));
+}).catch(err => { $('#out').innerHTML = `<div class="card empty">Không tải được dữ liệu. Hãy mở trang qua máy chủ web (python3 -m http.server).<br><small>${esc(err.message)}</small></div>`; });
+})();
+</script>
