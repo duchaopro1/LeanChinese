@@ -10,6 +10,7 @@ Thư mục `data/` chứa dữ liệu phái sinh từ các nguồn sau. Giữ ng
 | [hanviet-pinyin-words](https://github.com/ph0ngp/hanviet-pinyin-words) | Âm Hán Việt theo pinyin | MIT |
 | [complete-hsk-vocabulary](https://github.com/drkameleon/complete-hsk-vocabulary) | Cấp HSK, tần suất, từ vựng, nghĩa tiếng Anh | MIT |
 | [OpenCC](https://github.com/BYVoid/OpenCC) (qua opencc-js) | Bảng giản thể → phồn thể để tra Hán Việt | Apache-2.0 |
-| `tools/vi_gloss.txt` | Nghĩa tiếng Việt cho chữ HSK 1–3 | Do tác giả trang viết |
+| `tools/vi_gloss.txt`, `tools/vi_words.txt` | Nghĩa tiếng Việt cho chữ và từ HSK 1–3 | Do tác giả trang viết |
+| [MyMemory](https://mymemory.translated.net/) API | Dịch máy tuỳ chọn, gọi từ trình duyệt khi người dùng bấm nút | Điều khoản của MyMemory |
 
 Mã nguồn của trang (`index.html`, `tools/build.py`) do tác giả trang quyền sử dụng; chưa gắn giấy phép.

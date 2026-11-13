@@ -47,7 +47,8 @@ body {
   padding-left: max(16px, env(safe-area-inset-left, 0px));
   padding-right: max(16px, env(safe-area-inset-right, 0px));
 }
-.wrap { max-width: 960px; margin: 0 auto; display: grid; gap: 16px; }
+[hidden] { display: none !important; }
+.wrap { width: 100%; max-width: 960px; margin: 0 auto; display: grid; gap: 16px; }
 .han { font-family: var(--font-han); }
 button { font: inherit; color: inherit; cursor: pointer; }
 :focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
@@ -176,10 +177,65 @@ button.it:hover { border-color: var(--accent); }
 .empty { text-align: center; padding: 40px 16px; color: var(--muted); }
 .foot { font-size: 12px; color: var(--muted); text-align: center; }
 
+
+/* tabs */
+.bar { justify-content: space-between; }
+.tabs { display: inline-flex; background: var(--sunk); border: 1px solid var(--line); border-radius: 12px; padding: 3px; gap: 2px; }
+.tabs button { border: 0; background: none; padding: 7px 14px; border-radius: 9px; font-weight: 600; font-size: 13px; color: var(--muted); }
+.tabs button[aria-selected="true"] { background: var(--ink); color: var(--bg); }
+.chip.ov { font: 600 13px var(--font-ui); display: inline-flex; align-items: center; }
+.btn { border: 1px solid var(--line); background: var(--card); border-radius: 10px; padding: 7px 14px; font-weight: 600; font-size: 13px; }
+.btn:hover { border-color: var(--accent); }
+.btn.pri { background: var(--ink); color: var(--bg); border-color: var(--ink); }
+.btnrow { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
+
+/* multi-character overview */
+.ruby { display: flex; flex-wrap: wrap; gap: 10px 16px; align-items: flex-end; }
+.wd { display: inline-flex; gap: 2px; padding-bottom: 6px; border-bottom: 2px solid var(--line); }
+.wd.multi { border-bottom-color: var(--accent); }
+.rc { display: grid; justify-items: center; min-width: 44px; }
+.rp { font-size: 12px; font-weight: 600; color: var(--accent); line-height: 1.4; }
+.rh { font-size: 40px; line-height: 1.2; }
+.rhv { font-size: 11px; color: var(--muted); min-height: 1.4em; }
+.np { align-self: center; font-size: 24px; color: var(--muted); }
+.wrow { display: flex; gap: 6px 14px; align-items: baseline; width: 100%; text-align: left; padding: 9px 4px; border: 0; border-bottom: 1px solid var(--line); background: none; flex-wrap: wrap; }
+.wrow:hover { background: var(--sunk); }
+.wrow .han { font-size: 22px; min-width: 2.6em; }
+.wrow .rd { font-size: 12px; font-weight: 600; min-width: 5.5em; }
+.wrow .gl { font-size: 13px; color: var(--muted); flex: 1 1 140px; overflow-wrap: anywhere; }
+.minis { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 12px; }
+.mini { text-align: left; border: 1px solid var(--line); border-radius: 14px; padding: 12px; background: var(--card); display: grid; grid-template-columns: 76px 1fr; gap: 12px; align-items: center; min-width: 0; }
+.mini:hover { border-color: var(--accent); }
+.mg { width: 76px; aspect-ratio: 1; border-radius: 10px; background: var(--sunk); border: 1px solid var(--line); }
+.mg svg { width: 100%; height: 100%; display: block; }
+.mg .ghost { fill: var(--ghost); }
+.mg .rv { fill: none; stroke-width: 150; stroke-linecap: round; stroke-linejoin: round; stroke: var(--ink-stroke); }
+.mg .grid { display: none; }
+.mini .t { font-weight: 700; font-size: 14px; }
+.mini .t b { color: var(--accent); }
+.mini .s { font-size: 12px; color: var(--muted); }
+.mini .st { font-size: 13px; margin-top: 2px; }
+
+/* translate tab */
+.chunks { display: flex; flex-wrap: wrap; gap: 10px; }
+.ck { border: 1px solid var(--line); background: var(--card); border-radius: 12px; padding: 8px 12px; text-align: center; min-width: 64px; }
+.ck .han { font-size: 30px; line-height: 1.2; display: block; }
+.ck .src { font-size: 12px; color: var(--accent); font-weight: 600; display: block; }
+.ck .alt { font-size: 10px; color: var(--muted); display: block; }
+.ck.unk { border-style: dashed; color: var(--muted); }
+.ck.unk .han { font-size: 22px; }
+.asm { font: 500 34px/1.3 var(--font-han); margin: 14px 0 2px; overflow-wrap: anywhere; }
+.asm-py { color: var(--accent); font-weight: 600; margin-bottom: 12px; overflow-wrap: anywhere; }
+.mt { background: var(--sunk); border: 1px dashed var(--line); border-radius: 14px; padding: 14px 16px; }
+.mt .han { font-size: 28px; line-height: 1.4; overflow-wrap: anywhere; }
+.res .han { font-size: 28px; }
+.res .tg { font-size: 11px; color: var(--accent); }
+
 @media (max-width: 760px) {
   .cols, .story { grid-template-columns: 1fr; }
   .hero { grid-template-columns: 1fr; justify-items: center; text-align: center; }
   .py, .tags, .legend { justify-content: center; }
+  .tabs { width: 100%; } .tabs button { flex: 1; padding-inline: 8px; }
   .py .pinyin { font-size: 34px; }
   .card { padding: 18px; }
 }
@@ -192,15 +248,32 @@ button.it:hover { border-color: var(--accent); }
 
 <div class="wrap">
   <header class="bar">
-    <div class="brand">Giải tự <small>phân tích cấu tạo chữ Hán</small></div>
+    <div class="brand">Giải tự <small>học chữ Hán qua cấu tạo</small></div>
+    <nav class="tabs" role="tablist" aria-label="Chức năng">
+      <button role="tab" id="tab-an" data-view="phan-tich" aria-selected="true">Phân tích chữ Hán</button>
+      <button role="tab" id="tab-tr" data-view="dich" aria-selected="false">Dịch Việt → Trung</button>
+    </nav>
+  </header>
+
+  <section id="view-an" class="wrap" style="gap:16px">
     <form class="search" id="form" autocomplete="off">
-      <input id="q" type="text" inputmode="text" lang="zh-Hans" placeholder="Nhập một chữ hoặc một từ, ví dụ 想" aria-label="Chữ Hán cần phân tích">
+      <input id="q" type="text" inputmode="text" lang="zh-Hans" maxlength="60" placeholder="Nhập chữ, từ hoặc câu tiếng Trung, ví dụ 想 hoặc 我想喝茶" aria-label="Chữ Hán cần phân tích">
       <button class="go" type="submit">Phân tích</button>
     </form>
-  </header>
-  <div class="chips" id="chars" aria-label="Các chữ đã nhập"></div>
-  <main id="out" class="wrap" style="gap:16px"><div class="empty">Đang tải dữ liệu…</div></main>
-  <p class="foot">Dữ liệu: Make Me a Hanzi (phân rã, nét bút), Unihan và hanviet-pinyin-words (Hán Việt), complete-hsk-vocabulary (HSK, từ vựng). Nghĩa tiếng Việt hiện có cho chữ HSK 1–3, các chữ còn lại hiển thị nghĩa tiếng Anh.</p>
+    <div class="chips" id="chars" aria-label="Các chữ đã nhập"></div>
+    <main id="out" class="wrap" style="gap:16px"><div class="empty">Đang tải dữ liệu…</div></main>
+  </section>
+
+  <section id="view-tr" class="wrap" style="gap:16px" hidden>
+    <form class="search" id="tform" autocomplete="off">
+      <input id="vq" type="text" lang="vi" maxlength="120" placeholder="Nhập tiếng Việt, ví dụ: tôi muốn uống trà" aria-label="Tiếng Việt cần dịch sang tiếng Trung">
+      <button class="go" type="submit">Dịch</button>
+    </form>
+    <div class="chips" id="vsamples"></div>
+    <div id="tout" class="wrap" style="gap:16px"></div>
+  </section>
+
+  <p class="foot">Dữ liệu: Make Me a Hanzi (phân rã, nét bút), Unihan và hanviet-pinyin-words (Hán Việt), complete-hsk-vocabulary (HSK, từ vựng). Nghĩa tiếng Việt có cho khoảng 600 chữ và từ HSK 1–3, phần còn lại hiển thị nghĩa tiếng Anh.</p>
 </div>
 
 <script>
@@ -212,7 +285,7 @@ const store = { get(k){ try { return localStorage.getItem(k); } catch { return n
 
 let D = null, W = null; const shards = {};
 const HAN = /\p{Script=Han}/u;
-const SAMPLES = ['想', '朋', '好', '样', '河', '念'];
+const SAMPLES = ['想', '朋友', '好', '我想喝茶', '图书馆', '念'];
 
 /* bộ thủ biến thể và thành phần không có Hán Việt trong dữ liệu: [pinyin, Hán Việt, nghĩa] */
 const RAD = {
@@ -327,14 +400,14 @@ function roles(ch, tree) {
 const colorVars = cls => cls === 'ph' ? 'ph' : cls === 'se' ? 'se' : cls;
 
 /* ---------- stroke drawing ---------- */
-function drawGlyph(S, rs) {
+function drawGlyph(S, rs, pfx = '') {
   if (!S) return '<div class="nostroke han" aria-hidden="true"></div>';
   let defs = '', ghost = '', rv = '';
   S.s.forEach((d, i) => {
     const path = S.x?.[i]?.[0]; const cls = (path != null && rs[path]) ? rs[path].cls : '';
-    defs += `<clipPath id="cp${i}"><path d="${d}"/></clipPath>`;
+    defs += `<clipPath id="${pfx}cp${i}"><path d="${d}"/></clipPath>`;
     ghost += `<path class="ghost" d="${d}"/>`;
-    rv += `<path class="rv ${cls}" clip-path="url(#cp${i})" d="M${S.m[i].map(p => p.join(',')).join(' L')}"/>`;
+    rv += `<path class="rv ${cls}" clip-path="url(#${pfx}cp${i})" d="M${S.m[i].map(p => p.join(',')).join(' L')}"/>`;
   });
   return `<svg viewBox="0 0 1024 1024" role="img" aria-label="Thứ tự nét bút">
     <path class="grid" d="M0 0L1024 1024M1024 0L0 1024M512 0V1024M0 512H1024"/>
@@ -525,27 +598,285 @@ async function show(ch) {
   wordsCard(ch).then(h => { if (current === ch && h) $('#wordsSlot').innerHTML = h; });
 }
 
+/* ---------- word list, segmentation ---------- */
+let WL = null, LEX = null, PH = null;
+async function loadWL() { if (!WL) { try { WL = await (await fetch('data/wordlist.json')).json(); } catch { WL = {}; } } return WL; }
+const HANRUN = /\p{Script=Han}+|[^\p{Script=Han}]+/gu;
+function segment(run) {
+  const a = Array.from(run), out = []; let i = 0;
+  while (i < a.length) {
+    let hit = null;
+    for (let n = Math.min(7, a.length - i); n >= 2; n--) { const w = a.slice(i, i + n).join(''); if (WL[w]) { hit = w; break; } }
+    if (hit) { out.push(hit); i += Array.from(hit).length; } else { out.push(a[i]); i++; }
+  }
+  return out;
+}
+function reading(ch, syl) {
+  const c = D[ch], ps = c?.p || []; let idx = 0;
+  if (syl) {
+    const s = pySplit(syl);
+    let j = ps.findIndex(p => { const q = pySplit(p); return q.base === s.base && q.tone === s.tone; });
+    if (j < 0) j = ps.findIndex(p => pySplit(p).base === s.base);
+    if (j >= 0) idx = j;
+  }
+  const hv = ((c?.hv?.[idx] || c?.hv?.[0] || [])[0]) || (RAD[ch]?.[1] || '');
+  return { py: syl || RAD[ch]?.[0] || ps[0] || '', hv };
+}
+function wordCells(w) {
+  const chars = Array.from(w), sy = WL[w]?.[0]?.trim().split(/\s+/);
+  const ok = sy && sy.length === chars.length;
+  return chars.map((ch, i) => ({ ch, ...reading(ch, ok ? sy[i].toLowerCase() : '') }));
+}
+function winfo(w) {
+  if (Array.from(w).length > 1 && WL[w]) {
+    const [py, en, L, sc, vi] = WL[w];
+    return { py, gl: vi || en, tag: L ? (sc === 'o' ? `HSK ${L}` : `HSK 3.0 · ${L}`) : '' };
+  }
+  const c = D[w], i = info(w);
+  return { py: i.py, gl: i.gl, tag: c?.h ? (c.hs === 'new' ? `HSK 3.0 · ${c.h}` : `HSK ${c.h}`) : '' };
+}
+function pinyinLine(text) {
+  return (text.match(HANRUN) || []).map(t => HAN.test(t[0]) ? segment(t).map(w => wordCells(w).map(c => c.py).join(' ')).join(' ') : t.trim()).join(' ').replace(/\s+/g, ' ');
+}
+function speak(text) {
+  try { speechSynthesis.cancel(); const u = new SpeechSynthesisUtterance(text); u.lang = 'zh-CN'; u.rate = .8; speechSynthesis.speak(u); } catch {}
+}
+
+/* ---------- multi-character overview ---------- */
+let lastText = '';
+function structureLine(c) {
+  const d = D[c], et = d?.et, tree = parseIDS(d?.dc);
+  if (et?.type === 'pictophonetic') return [et.phonetic && `<span class="c-ph han">${esc(et.phonetic)}</span> âm`, et.semantic && `<span class="c-se han">${esc(et.semantic)}</span> ý`].filter(Boolean).join(' + ') + ' · hình thanh';
+  if (tree?.kids) return tree.kids.map(k => `<span class="han">${esc(flat(k))}</span>`).join(' + ') + (et ? ` · ${TYPE[et.type] || ''}` : '');
+  return 'chữ cơ bản';
+}
+async function overview(text) {
+  current = ''; lastText = text;
+  document.querySelectorAll('#chars .chip').forEach(b => b.setAttribute('aria-current', b.dataset.ov !== undefined ? 'true' : 'false'));
+  const out = $('#out'); out.innerHTML = '<div class="card empty">Đang phân tích…</div>';
+  await loadWL(); if (current !== '') return;
+  const toks = text.match(HANRUN) || [], words = []; let ruby = '';
+  for (const t of toks) {
+    if (!HAN.test(t[0])) { ruby += `<span class="np">${esc(t.trim())}</span>`; continue; }
+    for (const w of segment(t)) {
+      words.push(w);
+      ruby += `<span class="wd${Array.from(w).length > 1 ? ' multi' : ''}">${wordCells(w).map(c => `<span class="rc"><span class="rp">${esc(c.py)}</span><span class="rh han">${esc(c.ch)}</span><span class="rhv">${esc(c.hv)}</span></span>`).join('')}</span>`;
+    }
+  }
+  const whole = WL[text.trim()] ? winfo(text.trim()) : null;
+  const rows = uniq(words).map(w => {
+    const i = winfo(w), multi = Array.from(w).length > 1;
+    return `<button class="wrow" ${multi ? `data-say="${esc(w)}"` : `data-open="${esc(w)}"`}><span class="han">${esc(w)}</span><span class="rd">${esc(i.py)}</span><span class="gl">${esc(i.gl)}</span>${i.tag ? `<span class="tag">${esc(i.tag)}</span>` : ''}</button>`;
+  }).join('');
+  const chars = uniq(Array.from(text).filter(c => HAN.test(c)));
+  const minis = chars.map((c, i) => {
+    const ii = info(c);
+    return `<button class="mini" data-open="${esc(c)}"><div class="mg" id="mg${i}"></div><div><div class="t">${esc(ii.py)}${ii.hv[0] ? ' · <b>' + esc(ii.hv[0]) + '</b>' : ''}</div><div class="s">${esc(ii.gl)}</div><div class="st">${structureLine(c)}</div></div></button>`;
+  }).join('');
+  out.innerHTML = `
+  <section class="card"><h2>Cả cụm <span>pinyin phía trên, Hán Việt phía dưới, gạch cam nối các chữ của một từ</span></h2>
+    <div class="ruby">${ruby}</div>
+    <div class="btnrow" style="margin-top:14px">
+      ${whole ? `<span style="font-weight:600;font-size:17px">${esc(whole.gl)}</span>${whole.tag ? `<span class="tag hot">${esc(whole.tag)}</span>` : ''}` : `<span class="note">Cả cụm không có trong từ điển HSK, xem nghĩa từng từ bên dưới.</span>`}
+      ${'speechSynthesis' in window ? '<button class="btn" id="sayAll" type="button">Nghe</button>' : ''}
+    </div></section>
+  <section class="card"><h2>Từ trong cụm <span>bấm để xem chi tiết</span></h2>${rows}</section>
+  <section class="card"><h2>Từng chữ <span>bấm để xem cấu tạo đầy đủ và thứ tự nét</span></h2><div class="minis">${minis}</div></section>`;
+  $('#sayAll')?.addEventListener('click', () => speak(text));
+  out.querySelectorAll('[data-open]').forEach(b => b.addEventListener('click', () => { show(b.dataset.open); window.scrollTo({ top: 0, behavior: 'smooth' }); }));
+  out.querySelectorAll('[data-say]').forEach(b => b.addEventListener('click', () => setInput(b.dataset.say)));
+  chars.forEach((c, i) => strokes(c).then(S => { const el = document.getElementById('mg' + i); if (el && S) el.innerHTML = drawGlyph(S, roles(c, parseIDS(D[c]?.dc)), `m${i}_`); }));
+}
+
 /* ---------- input ---------- */
-function renderChips(list) {
-  $('#chars').innerHTML = list.length ? `<span class="lbl">${list.length > 1 ? 'Các chữ:' : 'Thử:'}</span>` + list.map(c => `<button class="chip han" data-go="${esc(c)}" aria-current="false">${esc(c)}</button>`).join('') : '';
-  $('#chars').querySelectorAll('.chip').forEach(b => b.addEventListener('click', () => show(b.dataset.go)));
+function renderChips(list, multi) {
+  $('#chars').innerHTML = multi
+    ? `<span class="lbl">Xem:</span><button class="chip ov" data-ov="1" aria-current="false">Tổng quan</button>` + list.map(c => `<button class="chip han" data-go="${esc(c)}" aria-current="false">${esc(c)}</button>`).join('')
+    : '';
+  $('#chars').querySelectorAll('.chip').forEach(b => b.addEventListener('click', () => b.dataset.ov !== undefined ? overview(lastText) : show(b.dataset.go)));
 }
 function setInput(text) {
-  const list = uniq(Array.from(text).filter(c => HAN.test(c)));
+  text = (text || '').trim();
   $('#q').value = text;
-  if (!list.length) { $('#out').innerHTML = `<div class="card empty">Hãy nhập chữ Hán, ví dụ 想 hoặc 朋友.</div>`; return; }
-  renderChips(list.length > 1 ? list : []);
-  show(list[0]);
+  const hanChars = Array.from(text).filter(c => HAN.test(c));
+  if (!hanChars.length) { $('#chars').innerHTML = ''; $('#out').innerHTML = `<div class="card empty">Hãy nhập chữ Hán, ví dụ 想, 朋友 hoặc 我想喝茶.</div>`; return; }
+  lastText = text;
+  const multi = hanChars.length > 1;
+  renderChips(uniq(hanChars), multi);
+  if (multi) overview(text); else show(hanChars[0]);
 }
-$('#form').addEventListener('submit', e => { e.preventDefault(); setInput($('#q').value.trim()); });
+$('#form').addEventListener('submit', e => { e.preventDefault(); setInput($('#q').value); });
+
+/* ---------- Vietnamese -> Chinese ---------- */
+const foldVi = s => s.normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/đ/g, 'd').replace(/Đ/g, 'D').toLowerCase();
+const rankEntry = (a, b) => ((a.L || 9) - (b.L || 9)) || (Array.from(a.zh).length - Array.from(b.zh).length);
+async function loadLex() {
+  if (LEX) return LEX;
+  let arr = []; try { arr = await (await fetch('data/lex.json')).json(); } catch {}
+  await loadWL();
+  LEX = arr.map(([zh, py, vi, L]) => {
+    const segs = vi.split(/\s*[·,;]\s*/).map(x => x.replace(/\s*\(.*?\)\s*/g, ' ').trim()).filter(Boolean);
+    return { zh, py, vi, L, sr: segs.map(x => x.toLowerCase()), sf: segs.map(foldVi) };
+  });
+  PH = new Map();
+  for (const e of LEX) for (const k of new Set(e.sf)) { if (!PH.has(k)) PH.set(k, []); PH.get(k).push(e); }
+  for (const l of PH.values()) l.sort(rankEntry);
+  return LEX;
+}
+function searchVi(q) {
+  const qr = q.trim().toLowerCase(), qf = foldVi(qr); if (!qf) return [];
+  const toks = qf.split(/\s+/), res = [];
+  for (const e of LEX) {
+    let sc = 0;
+    for (let i = 0; i < e.sf.length; i++) {
+      const f = e.sf[i];
+      if (f === qf) sc = Math.max(sc, 100 + (e.sr[i] === qr ? 15 : 0) - i * 2);
+      else if ((' ' + f + ' ').includes(' ' + qf + ' ')) sc = Math.max(sc, 55 + (e.sr[i].includes(qr) ? 8 : 0));
+    }
+    if (!sc && toks.length > 1) { const all = foldVi(e.vi); if (toks.every(t => all.includes(t))) sc = 30; }
+    if (sc) res.push({ e, s: sc + (e.L ? 7 - e.L : 0) });
+  }
+  res.sort((a, b) => b.s - a.s || Array.from(a.e.zh).length - Array.from(b.e.zh).length);
+  return res.slice(0, 14).map(r => r.e);
+}
+function hvSearch(q) {
+  const qr = q.trim().toLowerCase(), qf = foldVi(qr), n = qr.split(/\s+/).length;
+  if (!qf || n > 4) return [];
+  const out = [];
+  if (n === 1) {
+    for (const [c, v] of Object.entries(D)) {
+      const hs = hvList(v).map(x => x.toLowerCase()); if (!hs.length) continue;
+      const exact = hs.includes(qr), loose = hs.some(x => foldVi(x) === qf);
+      if (exact || loose) out.push({ zh: c, exact, k: (v.h ?? 99) * 1e7 + (v.f ?? 1e6) });
+    }
+    out.sort((a, b) => (b.exact - a.exact) || (a.k - b.k));
+  } else {
+    for (const w of Object.keys(WL)) {
+      if (Array.from(w).length !== n) continue;
+      const h = wordCells(w).map(c => c.hv.toLowerCase()).join(' ');
+      if (h === qr || foldVi(h) === qf) out.push({ zh: w, exact: h === qr, k: WL[w][2] || 9 });
+    }
+    out.sort((a, b) => (b.exact - a.exact) || (a.k - b.k));
+  }
+  return out.slice(0, 16).map(x => x.zh);
+}
+function enSearch(q) {
+  const t = q.trim().toLowerCase(); if (t.length < 2 || !/^[\x00-\x7f]+$/.test(t)) return [];
+  const re = new RegExp('(^|[^a-z])' + t.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'i'), res = [];
+  const consider = (w, enRaw, L) => {
+    const en = enRaw.toLowerCase().replace(/\s*\(.*?\)/g, ''); if (!re.test(en)) return;
+    const segs = en.split(/;\s*/).map(x => x.trim());
+    const s = segs.includes(t) || segs.includes('to ' + t) ? 100 : segs.some(x => x.startsWith(t) || x.startsWith('to ' + t)) ? 70 : 40;
+    res.push({ w, s: s + (L ? 7 - L : 0) - Array.from(w).length * 2 });
+  };
+  for (const [w, v] of Object.entries(WL)) consider(w, v[1] || '', v[2]);
+  for (const [c, v] of Object.entries(D)) if (v.m) consider(c, v.m.join('; '), v.h);
+  return res.sort((a, b) => b.s - a.s).slice(0, 12).map(r => r.w);
+}
+function chunkQuery(q) {
+  const raw = q.trim().split(/\s+/).filter(Boolean), tf = raw.map(t => foldVi(t.replace(/[.,!?;:"“”]/g, '')));
+  const out = []; let i = 0;
+  while (i < raw.length) {
+    let hit = null;
+    for (let n = Math.min(4, raw.length - i); n >= 1; n--) { const k = tf.slice(i, i + n).join(' '); if (k && PH.has(k)) { hit = { src: raw.slice(i, i + n).join(' '), c: PH.get(k).slice(0, 6), n }; break; } }
+    if (hit) { out.push({ src: hit.src, c: hit.c, k: 0 }); i += hit.n; } else { out.push({ src: raw[i], c: [], k: 0 }); i++; }
+  }
+  return out;
+}
+let chunks = [], trQuery = '';
+const asm = () => chunks.map(c => c.c[c.k]?.zh || '').join('');
+function chunkHtml() {
+  return `<div class="chunks">${chunks.map((c, i) => c.c.length
+    ? `<button class="ck" data-ck="${i}" title="${c.c.length > 1 ? 'Bấm để đổi sang từ khác' : ''}"><span class="han">${esc(c.c[c.k].zh)}</span><span class="src">${esc(c.src)}</span>${c.c.length > 1 ? `<span class="alt">${c.k + 1}/${c.c.length} · bấm để đổi</span>` : ''}</button>`
+    : `<div class="ck unk"><span class="han">?</span><span class="src">${esc(c.src)}</span><span class="alt">chưa có trong từ điển</span></div>`).join('')}</div>`;
+}
+function asmHtml() {
+  const z = asm();
+  return z ? `<div class="asm han">${esc(z)}</div><div class="asm-py">${esc(pinyinLine(z))}</div>` : '';
+}
+function resCard(zh, py, gl, tg) {
+  return `<button class="it res" data-an="${esc(zh)}"><span class="han">${esc(zh)}</span><span class="rd">${esc(py)}</span><span class="gl">${esc(gl)}</span>${tg ? `<span class="tg">${esc(tg)}</span>` : ''}</button>`;
+}
+function wcard(w, tg) { const i = winfo(w); return resCard(w, i.py, i.gl, tg || i.tag); }
+
+function runTr() {
+  const q = $('#vq').value.trim(), out = $('#tout'); trQuery = q;
+  if (!LEX) return;
+  if (!q) { out.innerHTML = '<div class="card empty">Nhập một từ hoặc một câu tiếng Việt để tra sang tiếng Trung.</div>'; return; }
+  const lex = searchVi(q), multi = q.split(/\s+/).length > 1;
+  chunks = multi ? chunkQuery(q) : [];
+  const seen = new Set(lex.map(e => e.zh));
+  const hv = hvSearch(q).filter(w => !seen.has(w)); hv.forEach(w => seen.add(w));
+  const en = ((!lex.length || /^[\x00-\x7f]+$/.test(q)) ? enSearch(q) : []).filter(w => !seen.has(w));
+  const showChunks = multi && chunks.some(c => c.c.length);
+  let html = '';
+  if (showChunks) html += `<section class="card" id="chunkCard"><h2>Dịch từng từ <span>ghép từ điển, chưa đổi trật tự câu</span></h2><div id="chunkBox">${chunkHtml()}${asmHtml()}</div>
+    <div class="btnrow"><button class="btn pri" data-an-asm="1" type="button">Phân tích chuỗi này</button></div></section>`;
+  if (lex.length) html += `<section class="card"><h2>Từ điển Việt → Trung <span>${lex.length} kết quả, bấm để phân tích</span></h2><div class="list">${lex.map(e => resCard(e.zh, e.py, e.vi, e.L ? 'HSK ' + e.L : '')).join('')}</div></section>`;
+  if (hv.length) html += `<section class="card"><h2>${hv[0] && Array.from(hv[0]).length > 1 ? 'Từ' : 'Chữ'} Hán Việt đọc là “${esc(q)}” <span>${hv.length} kết quả</span></h2><div class="list">${hv.map(w => wcard(w)).join('')}</div></section>`;
+  if (en.length) html += `<section class="card"><h2>Khớp nghĩa tiếng Anh <span>nguồn từ vựng HSK, chỉ để tham khảo</span></h2><div class="list">${en.map(w => wcard(w)).join('')}</div></section>`;
+  if (!html) html = `<div class="card empty">Chưa tìm thấy “${esc(q)}” trong từ điển (hiện có khoảng 600 từ và chữ HSK 1–3).<br>Thử gõ từ ngắn hơn, tiếng Anh, hoặc âm Hán Việt như “bằng hữu”.</div>`;
+  html += `<section class="card"><h2>Dịch cả câu bằng dịch máy <span>tuỳ chọn, cần Internet</span></h2>
+    <p class="note" style="margin:0 0 12px">Nội dung bạn nhập sẽ được gửi tới dịch vụ MyMemory (bên thứ ba). Chất lượng chỉ để tham khảo, nên đối chiếu với từ điển ở trên.</p>
+    <div class="btnrow"><button class="btn" id="mtGo" type="button">Dịch máy</button></div><div id="mtOut" style="margin-top:12px"></div></section>`;
+  out.innerHTML = html;
+}
+async function machineTranslate() {
+  const box = $('#mtOut'), q = trQuery.slice(0, 200); box.innerHTML = '<span class="note">Đang dịch…</span>';
+  try {
+    const ctl = new AbortController(), t = setTimeout(() => ctl.abort(), 10000);
+    const r = await fetch('https://api.mymemory.translated.net/get?q=' + encodeURIComponent(q) + '&langpair=' + encodeURIComponent('vi|zh-CN'), { signal: ctl.signal });
+    clearTimeout(t);
+    const j = await r.json(), z = j?.responseData?.translatedText;
+    if (!z || !HAN.test(z)) throw new Error('empty');
+    box.innerHTML = `<div class="mt"><div class="han">${esc(z)}</div><div class="asm-py">${esc(pinyinLine(z))}</div><div class="btnrow"><button class="btn pri" data-an-mt="${esc(z)}" type="button">Phân tích</button></div></div>`;
+  } catch {
+    box.innerHTML = '<span class="note">Không kết nối được dịch vụ dịch máy. Có thể do mất mạng hoặc trang đang chạy ở nơi chặn kết nối ra ngoài. Phần tra từ điển ở trên vẫn dùng bình thường.</span>';
+  }
+}
+function goAnalyze(text) { setInput(text); if (location.hash !== '#phan-tich') location.hash = '#phan-tich'; else route(); window.scrollTo({ top: 0 }); }
+$('#tout').addEventListener('click', e => {
+  const t = e.target.closest('button'); if (!t) return;
+  if (t.dataset.an) return goAnalyze(t.dataset.an);
+  if (t.dataset.anAsm) return goAnalyze(asm());
+  if (t.dataset.anMt) return goAnalyze(t.dataset.anMt);
+  if (t.id === 'mtGo') return machineTranslate();
+  if (t.dataset.ck !== undefined) { const c = chunks[+t.dataset.ck]; c.k = (c.k + 1) % c.c.length; $('#chunkBox').innerHTML = chunkHtml() + asmHtml(); }
+});
+let trTimer = 0;
+$('#vq').addEventListener('input', () => { clearTimeout(trTimer); trTimer = setTimeout(runTr, 250); });
+$('#tform').addEventListener('submit', e => { e.preventDefault(); runTr(); });
+
+let trReady = false;
+const VSAMPLES = ['tôi muốn uống trà', 'cảm ơn', 'tôi thích uống cà phê', 'bạn bè', 'bằng hữu'];
+async function initTr() {
+  if (trReady) return; trReady = true;
+  $('#tout').innerHTML = '<div class="card empty">Đang tải từ điển…</div>';
+  $('#vsamples').innerHTML = '<span class="lbl">Thử:</span>' + VSAMPLES.map(v => `<button class="chip" style="font:500 13px var(--font-ui)" data-v="${esc(v)}">${esc(v)}</button>`).join('');
+  $('#vsamples').querySelectorAll('.chip').forEach(b => b.addEventListener('click', () => { $('#vq').value = b.dataset.v; runTr(); }));
+  await loadLex();
+  if (!$('#vq').value) $('#vq').value = VSAMPLES[0];
+  runTr();
+}
+
+/* ---------- tabs ---------- */
+function route() {
+  const tr = location.hash === '#dich';
+  $('#view-an').hidden = tr; $('#view-tr').hidden = !tr;
+  $('#tab-an').setAttribute('aria-selected', String(!tr)); $('#tab-tr').setAttribute('aria-selected', String(tr));
+  if (tr) initTr();
+}
+document.querySelectorAll('.tabs button').forEach(b => b.addEventListener('click', () => { location.hash = '#' + b.dataset.view; }));
+addEventListener('hashchange', route);
 
 load().then(() => {
   const last = store.get('hanzi:last');
   setInput(last && D[last] ? last : '想');
   const s = document.createElement('div'); s.className = 'chips'; s.id = 'samples';
-  s.innerHTML = '<span class="lbl">Chữ mẫu:</span>' + SAMPLES.map(c => `<button class="chip han" data-s="${c}" aria-current="false">${c}</button>`).join('');
+  s.innerHTML = '<span class="lbl">Thử:</span>' + SAMPLES.map(c => `<button class="chip han" data-s="${c}" aria-current="false">${c}</button>`).join('');
   $('#chars').after(s);
   s.querySelectorAll('.chip').forEach(b => b.addEventListener('click', () => setInput(b.dataset.s)));
+  route();
 }).catch(err => { $('#out').innerHTML = `<div class="card empty">Không tải được dữ liệu. Hãy mở trang qua máy chủ web (python3 -m http.server).<br><small>${esc(err.message)}</small></div>`; });
 })();
 </script>

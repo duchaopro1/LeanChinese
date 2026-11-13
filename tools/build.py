@@ -35,7 +35,9 @@ def numeric(py):
         else: out += ch
     return (out.replace('ü', 'v') + tone)
 NOM_FIX = {'冷': ['lãnh'], '低': ['đê'], '年': ['niên'], '看': ['khán'], '找': [], '搬': ['ban'], '刷': ['loát'],
-           '吧': [], '呢': [], '吗': [], '啊': [], '喂': [], '哪': ['na'], '他': ['tha'], '地': ['địa'], '她': [], '它': []}
+           '吧': [], '呢': ['ni'], '吗': [], '啊': [], '喂': ['uý'], '哪': ['na'], '他': ['tha'], '地': ['địa'], '她': [], '它': [],
+           '吃': ['ngật'], '喝': ['hát'], '敢': ['cảm'], '每': ['mỗi'], '比': ['bỉ'], '瘦': ['sấu'], '着': ['trước'],
+           '离': ['ly'], '胖': ['bàn'], '跟': ['cân'], '里': ['lý'], '零': ['linh']}
 def hv_for(c, pinys):
     cands = [c] + ([s2t[c]] if c in s2t else [])
     res = []
@@ -55,6 +57,7 @@ def hv_for(c, pinys):
 # --- HSK ---
 hsk = json.load(open(f'{src}/hsk.json', encoding='utf8'))
 lvl, freq, words = {}, {}, collections.defaultdict(list)
+wordlist = {}
 for e in hsk:
     w = e['simplified']
     levels = e['level']
@@ -72,6 +75,12 @@ for e in hsk:
     else:
         for ch in set(w):
             words[ch].append((f, w, py, mean, L))
+        ms = []
+        for fm in e['forms']: ms += fm['meanings']
+        bad = ('surname', 'variant of', 'abbr. for', 'old variant', 'Taiwan pr.')
+        good = [m for m in ms if not any(b in m for b in bad)] or ms
+        if w not in wordlist:
+            wordlist[w] = [py, '; '.join(good[:3]), L or 0, 'o' if old else 'n']
 wl = {}
 for ch, lst in words.items():
     lst.sort()
@@ -146,3 +155,23 @@ for k, v in mt.items():
 
 json.dump(chars, open(out + '/chars.json', 'w', encoding='utf8'), ensure_ascii=False, separators=(',', ':'))
 print(len(chars), 'chars;', len(shards), 'stroke shards')
+
+# --- Vietnamese lexicon (for Vietnamese -> Chinese search) + word list ---
+here = os.path.dirname(os.path.abspath(__file__))
+viw = dict(l.rstrip('\n').split(' ', 1) for l in open(os.path.join(here, 'vi_words.txt'), encoding='utf8') if l.strip())
+lex = []
+for z, g in viw.items():
+    if z in wordlist:
+        wordlist[z].append(g); lex.append([z, wordlist[z][0], g, wordlist[z][2]])
+    else:
+        py = ' '.join((chars.get(ch, {}).get('p') or [''])[0] for ch in z)
+        wordlist[z] = [py, '', 0, 'o', g]; lex.append([z, py, g, 0])
+for c, g in vi.items():
+    p = (chars.get(c, {}).get('p') or [''])[0]
+    L = chars.get(c, {}).get('h', 0)
+    lex.append([c, p, g, L])
+for w, v in wordlist.items():
+    if len(v) == 4: v.append('')
+json.dump(wordlist, open(out + '/wordlist.json', 'w', encoding='utf8'), ensure_ascii=False, separators=(',', ':'))
+json.dump(lex, open(out + '/lex.json', 'w', encoding='utf8'), ensure_ascii=False, separators=(',', ':'))
+print(len(wordlist), 'words;', len(lex), 'lexicon entries')
